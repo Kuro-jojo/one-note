@@ -8,6 +8,6 @@ class Note:
     title: str
     content: str
     createdAt: datetime
-    tag: Tag
+    tag: Tag = None
     id: int = 0
     

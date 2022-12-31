@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+	One Note
+{% endblock %}
+
+{% block head %}
+	{{ super() }}
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-center m-5">{{ note.title }}</h1>
+	<div class="container col-3">
+		<div class="h-100 p-5 bg-light border rounded-3">
+			{{ note.content }}
+		</div>
+		<div class="container mt-5 d-flex justify-content-around">
+			<a href="/note/edit/{{ note.id }}" class="btn btn-outline-primary">Edit</a>
+			<a href="/note/delete/{{ note.id }}" class="btn btn-danger">Delete</a>
+		</div>
+	</div>
+{% endblock %}

@@ -9,14 +9,14 @@ One Note
 
 {% block body %}
 <h1 class="text-center m-5">My notes</h1>
-<div class="container">
+<div class="container col-3">
 	<ul class="list-group">
 		{% for note in notes %}
-		<li class="list-group-item">
+		<li class="list-group-item mb-3">
 			<div class="container">
 
-				<a href="/note/1">{{ note }}</a>
-				<p>{{note.content}}</p>
+				<a href="/note/{{ note.id }}">{{ note.title }}</a>
+				<p>{{note.content | truncate()}}</p>
 			</div>
 		</li>
 		{% endfor %}

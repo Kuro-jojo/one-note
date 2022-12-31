@@ -1,9 +1,6 @@
 import datetime
 from markupsafe import escape
-from flask import Flask
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import Flask,  render_template, request, url_for, redirect
 
 from db import db
 from mapper.NoteMapper import NoteMapper
@@ -30,22 +27,44 @@ def note_index():
 def add_note():
     if request.method == 'POST':
         data = request.form
+        
         if is_data_valid(data.listvalues()):
-            tag = Tag("Tag 1", "black")
-            TagMapper.find(0)
+            tag = None
+            # TODO: complete tag system
             note = Note(data['title'], data['content'], datetime.date.today(), tag)
             note.tag = tag
-            NoteMapper.add_note(note)
-            return note_index()
+            NoteMapper.add_note(note, DB_FILE)
+            
+            return redirect(url_for("note_index"))
         
     return render_template("note/add.html")
 
 @app.route("/note/<int:id>")
 def get_note(id:int):
     note = NoteMapper.find(id, DB_FILE)
-    print(note)
     
-    return escape(note)
+    return render_template("note/view.html", note=note)
+
+@app.route("/note/edit/<int:id>", methods=['GET', 'POST'])
+def edit_note(id:int):
+    note = NoteMapper.find(id, DB_FILE)
+    if request.method == 'POST':
+        data = request.form
+        if is_data_valid(data.listvalues()):
+            tag = note.tag
+            note.title = data['title']
+            note.content = data['content']
+        
+            NoteMapper.update(note, DB_FILE)
+            
+            return redirect(url_for("get_note", id=id))
+    
+    return render_template("note/edit.html", note=note)
+
+@app.route("/note/delete/<int:id>")
+def delete_note(id:int):
+    NoteMapper.delete(id, DB_FILE)
+    return redirect(url_for("note_index"))
 
 @app.route("/todo/")
 def todo_index():

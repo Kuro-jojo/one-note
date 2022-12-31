@@ -15,11 +15,14 @@ class NoteMapper:
         conn = db.get_db(db_file) 
         sql_query = "INSERT INTO note (title, content, createdAt, tag_id) VALUES (?, ?, ?, ?)"
         cursor = conn.cursor()
-
-        cursor.execute(sql_query, (note.title, note.content, note.createdAt, note.tag.id))
-        print("INSERTION: " , cursor.lastrowid)
+        tag_id = "null"
+        if note.tag:
+            tag_id = note.tag.id
+            
+        cursor.execute(sql_query, (note.title, note.content, note.createdAt, tag_id))
         conn.commit()
         conn.close()
+        print("INSERTION REUSSIE")
     
     @staticmethod  
     def find(note_id:int, db_file:str)->Note:
@@ -37,11 +40,8 @@ class NoteMapper:
         cursor = conn.cursor()
         cursor.execute(sql_query, (note_id,))
         r = cursor.fetchone()
-        tag = TagMapper.find(int(r[4]), db_file)
         
-        note = Note(r[1], r[2], r[3], tag , note_id)
-        
-        return note
+        return NoteMapper.to_Note_object(r, db_file)
     
     @staticmethod
     def find_all(db_file:str)->list:
@@ -52,10 +52,16 @@ class NoteMapper:
         """
         conn = db.get_db(db_file) 
         
-        sql_query = "SELECT title, content, createdAt, tag_id FROM note"
+        sql_query = "SELECT * FROM note"
         cursor = conn.cursor()
         cursor.execute(sql_query)
-        return cursor.fetchall()
+        
+        r = cursor.fetchall()
+        notes = []
+        for note in r:
+            notes.append(NoteMapper.to_Note_object(note, db_file))
+        
+        return notes
     
     @staticmethod    
     def update(note:Note, db_file:str):
@@ -67,9 +73,43 @@ class NoteMapper:
         conn = db.get_db(db_file) 
 
         sql_query = '''UPDATE note SET 
-                        title=?, content=?, createdAt=?, tag_id=?
+                        title=?, content=?, createdAt=?, tag_id=? WHERE id=?
                     '''
         cursor = conn.cursor()
-        cursor.execute(sql_query, (note.title, note.content, note.createdAt, note.tag.id))
+        
+        tag_id = "null"
+        if note.tag:
+            tag_id = note.tag.id
+            
+        cursor.execute(sql_query, (note.title, note.content, note.createdAt, tag_id, note.id))
         conn.commit()
         conn.close()
+    
+    
+    
+    @staticmethod    
+    def delete(id:int, db_file:str):
+        """delete a note
+
+        Args:
+            note (Note): the current note object
+        """ 
+        conn = db.get_db(db_file) 
+
+        sql_query = '''DELETE FROM note WHERE id=?
+                    '''
+        cursor = conn.cursor()
+        
+        cursor.execute(sql_query, (id,))
+        conn.commit()
+        conn.close()
+        print("DELETION COMPLETE")
+    
+    
+    @staticmethod  
+    def to_Note_object(note:tuple, db_file)->Note:
+        tag = None
+        if note[4] != "null":
+            tag = TagMapper.find(int(note[4]), db_file)
+        
+        return Note(note[1], note[2], note[3], tag , note[0])
