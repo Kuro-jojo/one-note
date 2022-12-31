@@ -1,0 +1,4 @@
+flask
+dataclasses
+typing
+click

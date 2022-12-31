@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}
+One Note
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center m-5">My notes</h1>
+<div class="container">
+	<ul class="list-group">
+		{% for note in notes %}
+		<li class="list-group-item">
+			<div class="container">
+
+				<a href="/note/1">{{ note }}</a>
+				<p>{{note.content}}</p>
+			</div>
+		</li>
+		{% endfor %}
+
+	</ul>
+</div>
+<div class="text-center">
+	<a href="/note/add" class="btn btn-success mt-3">Ajouter une note</a>
+</div>
+{% endblock %}
