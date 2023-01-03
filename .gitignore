@@ -3,5 +3,4 @@ venv/
 
 __pycache__
 
-src/db/test.sql
-src/db/scheme.sql
+*.sql
