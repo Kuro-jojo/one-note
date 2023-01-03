@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS note;
 
 DROP TABLE IF EXISTS item;
 
+DROP TABLE IF EXISTS note_tag;
+
 CREATE TABLE tag (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT UNIQUE NOT NULL,
@@ -16,11 +18,16 @@ CREATE TABLE note (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    createdAt TEXT NOT NULL,
-    tag_id INTEGER,
-    FOREIGN KEY (tag_id) REFERENCES tag (id)
+    createdAt TEXT NOT NULL
 );
 
+CREATE TABLE note_tag (
+    note_id INTEGER,
+    tag_id INTEGER,
+    FOREIGN KEY (tag_id) REFERENCES tag (id),
+    FOREIGN KEY (note_id) REFERENCES note (id),
+    CONSTRAINT pk_note_tag PRIMARY KEY (note_id, tag_id)
+);
 CREATE TABLE todo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,

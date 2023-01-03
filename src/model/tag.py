@@ -5,5 +5,5 @@ import datetime
 class Tag:
     title: str
     color: str
-    notes: list = field(default_factory=list)
+    # notes: list = field(default_factory=list)
     id: int = 0    

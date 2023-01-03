@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+One Note
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+<h1 class="text-center m-5">Ajouter un nouveau tag</h1>
+<div class="container col-4">
+    <form method="POST" action="/tag/add">
+        <div class="mb-3">
+            <label for="title" class="form-label">Nom du tag</label>
+            <input required type="text" class="form-control" id="title" name="title">
+        </div>
+        <div class="mb-3">
+            <label for="color" class="form-label">Couleur du tag</label>
+            <div class="col-1">
+                <input required type="color" class="form-control" id="color" name="color">
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success mt-3">Ajouter</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

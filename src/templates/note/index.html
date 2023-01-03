@@ -1,29 +1,53 @@
 {% extends "base.html" %}
 {% block title %}
-One Note
+	One Note
 {% endblock %}
 
 {% block head %}
-{{ super() }}
+	{{ super() }}
 {% endblock %}
 
 {% block body %}
-<h1 class="text-center m-5">My notes</h1>
-<div class="container col-3">
-	<ul class="list-group">
-		{% for note in notes %}
-		<li class="list-group-item mb-3">
-			<div class="container">
+	<h1 class="text-center m-5">My notes
+		{% if current_tag is defined %}
+			:
+			<button class="btn btn-sm" style="background-color: {{ current_tag.color }}">{{ current_tag.title }}</button>
+		{% endif %}
+	</h1>
+	<div class="container col-3">
+		<div class="m-5">
+			<div class="dropdown">
+				<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ default_tag if current_tag is not defined else current_tag.title}}</button>
 
-				<a href="/note/{{ note.id }}">{{ note.title }}</a>
-				<p>{{note.content | truncate()}}</p>
+				<ul class="dropdown-menu ">
+					{% for tag in tags %}
+
+						<li>
+							<a href="/note/tag/{{ tag.id }}" class="dropdown-item p-2 mb-1 text-center" style="background-color: {{ tag.color}} ">{{ tag.title }}</a>
+						</li>
+					{% endfor %}
+
+					<li>
+						<a class="dropdown-item text-center bg-secondary" href="/tag/add">Ajouter un tag</a>
+					</li>
+				</ul>
+
 			</div>
-		</li>
-		{% endfor %}
+		</div>
+		<ul class="list-group">
+			{% for note in notes %}
+				<li class="list-group-item mb-3">
+					<div class="container">
 
-	</ul>
-</div>
-<div class="text-center">
-	<a href="/note/add" class="btn btn-success mt-3">Ajouter une note</a>
-</div>
+						<a href="/note/{{ note.id }}">{{ note.title }}</a>
+						<p>{{note.content | truncate()}}</p>
+					</div>
+				</li>
+			{% endfor %}
+
+		</ul>
+	</div>
+	<div class="text-center">
+		<a href="/note/add" class="btn btn-success mt-3">Ajouter une note</a>
+	</div>
 {% endblock %}
